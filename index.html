@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f4f0e7">
-<title>Học Từ Vựng HSK 1-6 Chuẩn Mới</title>
+<title>中文卡片 — Học tiếng Trung cùng nhau</title>
 <style>
 :root{--bg:#f4f0e7;--card:#fffdf7;--ink:#252525;--muted:#77746d;--red:#c94737;--line:#e3dccd;--blue:#427eae;--green:#38785d}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -47,25 +47,26 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
 <body>
 <div class="app">
 <header>
-  <div class="brand"><div class="logo">中</div><div><h1>Học Từ Vựng HSK 1-6 ✨</h1><div class="sub">Chuẩn HSK · Flashcard · Xếp câu</div></div></div>
+  <div class="brand"><div class="logo">中</div><div><h1>Học tiếng Trung nè ✨</h1><div class="sub">Từ vựng · Câu ví dụ · Xếp câu</div></div></div>
   <button class="btn" id="resetBtn" title="Đặt lại bộ lọc">↻ Làm mới</button>
 </header>
 
 <div class="toolbar">
   <div>
-    <label for="category">Cấp độ HSK</label>
+    <label for="category">Bộ từ vựng</label>
     <select id="category">
-      <option value="all">Tất cả (HSK 1 - 6)</option>
+      <option value="all">Tất cả từ</option>
       <option value="HSK 1">HSK 1</option>
       <option value="HSK 2">HSK 2</option>
       <option value="HSK 3">HSK 3</option>
       <option value="HSK 4">HSK 4</option>
       <option value="HSK 5">HSK 5</option>
       <option value="HSK 6">HSK 6</option>
+      <option value="Công việc">Công việc / logistics</option>
       <option value="marked">Từ chưa thuộc ⭐</option>
     </select>
   </div>
-  <div><label for="search">Tìm từ / nghĩa</label><input id="search" placeholder="Ví dụ: 爱, phát triển..."></div>
+  <div><label for="search">Tìm từ / nghĩa</label><input id="search" placeholder="Ví dụ: 放行, thông quan..."></div>
   <div><label for="order">Cách học</label><select id="order"><option value="normal">Theo thứ tự</option><option value="random">Ngẫu nhiên</option><option value="unknown">Ôn từ chưa thuộc trước</option></select></div>
 </div>
 
@@ -119,84 +120,90 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
   <div class="feedback" id="gameFeedback"></div>
   <div id="correctAnswer" class="off" style="padding:12px;background:#f4f0e7;border-radius:12px;margin-top:6px"></div>
 </section>
-
-<details class="extra" open>
-  <summary>＋ Thêm từ vựng & Quản lý dữ liệu JSON</summary>
-  <p>Những từ tự thêm hoặc nhập từ file JSON sẽ lưu trực tiếp trên thiết bị này.</p>
+<details class="extra">
+  <summary>＋ Thêm từ vựng của riêng mày</summary>
+  <p>Những từ tự thêm được lưu ngay trên thiết bị này, không cần tài khoản.</p>
   <div class="addgrid">
     <input id="newHanzi" placeholder="Hán tự">
     <input id="newPinyin" placeholder="Pinyin">
     <input id="newMeaning" placeholder="Nghĩa">
     <select id="newCategory">
       <option>HSK 1</option><option>HSK 2</option><option>HSK 3</option>
-      <option>HSK 4</option><option>HSK 5</option><option>HSK 6</option>
+      <option>HSK 4</option><option>HSK 5</option><option>HSK 6</option><option>Công việc</option>
     </select>
     <input class="wide" id="newExample" placeholder="Câu ví dụ tiếng Trung">
     <input class="wide" id="newExamplePy" placeholder="Pinyin câu ví dụ">
     <input class="wide" id="newExampleVi" placeholder="Dịch câu ví dụ">
     <button class="btn primary wide" id="addBtn">Thêm từ</button>
   </div>
-  <div class="actions" style="justify-content:flex-start; margin-top:15px;">
-    <button class="btn" id="exportBtn">💾 Xuất dữ liệu JSON</button>
-    <label class="btn primary" for="importFile" style="cursor:pointer; display:inline-block;">📥 Nhập dữ liệu JSON</label>
-    <input class="off" type="file" id="importFile" accept=".json,application/json">
-  </div>
 </details>
-
 <footer>Tiến độ được lưu trên thiết bị này.</footer>
 </div>
-
 <script>
 const starter = [
-{id:"w1",h:"爱",p:"ài",m:"yêu, thích",c:"HSK 1",ec:"我爱吃中国菜。",ep:"Wǒ ài chī Zhōngguó cài.",ev:"Tôi thích ăn món Trung Quốc."},
-{id:"w2",h:"爸爸",p:"bàba",m:"bố",c:"HSK 1",ec:"我爸爸是医生。",ep:"Wǒ bàba shì yīshēng.",ev:"Bố tôi là bác sĩ."},
-{id:"w3",h:"北京",p:"Běijīng",m:"Bắc Kinh",c:"HSK 1",ec:"我住在北京。",ep:"Wǒ zhù zài Běijīng.",ev:"Tôi sống ở Bắc Kinh."},
-{id:"w4",h:"准备",p:"zhǔnbèi",m:"chuẩn bị",c:"HSK 2",ec:"你准备好了吗？",ep:"Nǐ zhǔnbèi hǎo le ma?",ev:"Bạn đã chuẩn bị xong chưa?"},
-{id:"w5",h:"安排",p:"ānpái",m:"sắp xếp, bố trí",c:"HSK 3",ec:"我来安排明天的工作。",ep:"Wǒ lái ānpái míngtiān de gōngzuò.",ev:"Để tôi sắp xếp công việc ngày mai."},
-{id:"w6",h:"负责",p:"fùzé",m:"phụ trách",c:"HSK 4",ec:"他负责这个项目。",ep:"Tā fùzé zhège xiàngmù.",ev:"Anh ấy phụ trách dự án này."},
-{id:"w7",h:"效率",p:"xiàolǜ",m:"hiệu suất",c:"HSK 5",ec:"我们要提高工作效率。",ep:"Wǒmen yào tígāo gōngzuò xiàolǜ.",ev:"Chúng ta cần nâng cao hiệu suất làm việc."},
-{id:"w8",h:"精益求精",p:"jīng yì qiú jīng",m:"không ngừng hoàn thiện",c:"HSK 6",ec:"我们在工作中要精益求精。",ep:"Wǒmen zài gōngzuò zhōng yào jīng yì qiú jīng.",ev:"Trong công việc chúng ta phải luôn hoàn thiện không ngừng."}
+// --- HSK 1 ---
+{h:"爱",p:"ài",m:"yêu, thích",c:"HSK 1",ec:"我爱吃中国菜。",ep:"Wǒ ài chī Zhōngguó cài.",ev:"Tôi thích ăn món Trung Quốc."},
+{h:"八",p:"bā",m:"số 8",c:"HSK 1",ec:"我有八个苹果。",ep:"Wǒ yǒu bā gè píngguǒ.",ev:"Tôi có 8 quả táo."},
+{h:"爸爸",p:"bàba",m:"bố",c:"HSK 1",ec:"我爸爸是医生。",ep:"Wǒ bàba shì yīshēng.",ev:"Bố tôi là bác sĩ."},
+{h:"杯子",p:"bēizi",m:"cái cốc, ly",c:"HSK 1",ec:"这个杯子很漂亮。",ep:"Zhège bēizi hěn piàoliang.",ev:"Cái cốc này rất đẹp."},
+{h:"北京",p:"Běijīng",m:"Bắc Kinh",c:"HSK 1",ec:"我住在北京。",ep:"Wǒ zhù zài Běijīng.",ev:"Tôi sống ở Bắc Kinh."},
+
+// --- HSK 2 ---
+{h:"准备",p:"zhǔnbèi",m:"chuẩn bị",c:"HSK 2",ec:"你准备好了吗？",ep:"Nǐ zhǔnbèi hǎo le ma?",ev:"Bạn đã chuẩn bị xong chưa?"},
+{h:"开始",p:"kāishǐ",m:"bắt đầu",c:"HSK 2",ec:"会议什么时候开始？",ep:"Huìyì shénme shíhou kāishǐ?",ev:"Cuộc họp khi nào bắt đầu?"},
+{h:"帮助",p:"bāngzhù",m:"giúp đỡ",c:"HSK 2",ec:"谢谢你的帮助。",ep:"Xièxie nǐ de bāngzhù.",ev:"Cảm ơn sự giúp đỡ của bạn."},
+{h:"经常",p:"jīngcháng",m:"thường xuyên",c:"HSK 2",ec:"我经常去游泳。",ep:"Wǒ jīngcháng qù yóuyǒng.",ev:"Tôi thường xuyên đi bơi."},
+
+// --- HSK 3 ---
+{h:"安排",p:"ānpái",m:"sắp xếp, bố trí",c:"HSK 3",ec:"我来安排明天的工作。",ep:"Wǒ lái ānpái míngtiān de gōngzuò.",ev:"Để tôi sắp xếp công việc ngày mai."},
+{h:"安全",p:"ānquán",m:"an toàn",c:"HSK 3",ec:"请注意安全。",ep:"Qǐng zhùyì ānquán.",ev:"Vui lòng chú ý an toàn."},
+{h:"比较",p:"bǐjiào",m:"khá; so sánh",c:"HSK 3",ec:"今天比较忙。",ep:"Jīntiān bǐjiào máng.",ev:"Hôm nay khá bận."},
+
+// --- HSK 4 ---
+{h:"负责",p:"fùzé",m:"phụ trách, chịu trách nhiệm",c:"HSK 4",ec:"他负责联系司机。",ep:"Tā fùzé liánxì sījī.",ev:"Anh ấy phụ trách liên hệ tài xế."},
+{h:"及时",p:"jíshí",m:"kịp thời",c:"HSK 4",ec:"请及时回复消息。",ep:"Qǐng jíshí huífù xiāoxi.",ev:"Vui lòng phản hồi tin nhắn kịp thời."},
+{h:"确认",p:"quèrèn",m:"xác nhận",c:"HSK 4",ec:"请确认车牌号码。",ep:"Qǐng quèrèn chēpái hàomǎ.",ev:"Vui lòng xác nhận biển số xe."},
+
+// --- HSK 5 ---
+{h:"效率",p:"xiàolǜ",m:"hiệu suất, hiệu quả",c:"HSK 5",ec:"我们要提高工作效率。",ep:"Wǒmen yào tígāo gōngzuò xiàolǜ.",ev:"Chúng ta cần nâng cao hiệu suất làm việc."},
+{h:"沟通",p:"gōutōng",m:"giao tiếp, trao đổi",c:"HSK 5",ec:"良好的沟通很重要。",ep:"Liánghǎo de gōutōng hěn zhòngyào.",ev:"Sự trao đổi tốt là rất quan trọng."},
+
+// --- HSK 6 ---
+{h:"精益求精",p:"jīng yì qiú jīng",m:"tinh xảo, luôn hoàn thiện",c:"HSK 6",ec:"我们在工作中要精益求精。",ep:"Wǒmen zài gōngzuò zhōng yào jīng yì qiú jīng.",ev:"Trong công việc chúng ta phải luôn hoàn thiện không ngừng."},
+
+// --- CÔNG VIỆC ---
+{h:"放行",p:"fàngxíng",m:"cho phép đi qua; thông quan",c:"Công việc",ec:"海关放行以后，司机才能离开。",ep:"Hǎiguān fàngxíng yǐhòu, sījī cái néng líkāi.",ev:"Sau khi hải quan cho thông qua, tài xế mới được rời đi."},
+{h:"报关",p:"bàoguān",m:"khai báo hải quan",c:"Công việc",ec:"这些货物已经报关了吗？",ep:"Zhèxiē huòwù yǐjīng bàoguān le ma?",ev:"Lô hàng này đã khai báo hải quan chưa?"}
 ];
 
-const KEY="zh_flashcards_v2";
-let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
-let words=Array.isArray(saved.words)&&saved.words.length?saved.words:starter;
-let marks=new Set(saved.marks||[]), known=new Set(saved.known||[]), hidden={hanzi:false,pinyin:false,meaning:false,example:false};
+const KEY="zh_flashcards_v1";
+let words=starter;
+let marks=new Set(), known=new Set(), hidden={hanzi:false,pinyin:false,meaning:false,example:false};
 let current=0, view=[];
 const $=id=>document.getElementById(id);
 
-function persist(){try{localStorage.setItem(KEY,JSON.stringify({words,marks:[...marks],known:[...known]}))}catch(e){}}
-
 function filtered(){
  let cat=$("category").value, q=$("search").value.trim().toLowerCase();
- let a=words.filter(w=>(cat==="all"||cat==="marked"&&marks.has(w.id||w.h)||w.c===cat)&&(!q||[w.h,w.p,w.m,w.ec,w.ev,w.c].join(" ").toLowerCase().includes(q)));
+ let a=words.filter(w=>(cat==="all"||cat==="marked"&&marks.has(w.h)||w.c===cat)&&(!q||[w.h,w.p,w.m,w.ec,w.ev,w.c].join(" ").toLowerCase().includes(q)));
  if($("order").value==="random")a=a.slice().sort(()=>Math.random()-.5);
  return a;
 }
 
 function render(){
- view=filtered();
- if(!view.length){
-   $("hanzi").textContent="Không có từ";$("pinyin").textContent="";$("meaning").textContent="Thử chọn bộ lọc khác xem.";
-   $("counter").textContent="0 / 0";$("fill").style.width="0";$("unknownBtn").disabled=true;return;
- }
- $("unknownBtn").disabled=false;
+ view=filtered();if(!view.length){$("hanzi").textContent="Không có từ";$("pinyin").textContent="";$("meaning").textContent="Đổi bộ lọc xem sao.";$("counter").textContent="0 / 0";return}
  if(current>=view.length)current=0;if(current<0)current=view.length-1;
- let w=view[current], k=w.id||w.h;
- $("tag").textContent=(w.c\vert{}\vert{}"HSK")+" · TỪ VỰNG";$("hanzi").textContent=w.h;$("pinyin").textContent=w.p;$("meaning").textContent=w.m;
+ let w=view[current];
+ $("tag").textContent=w.c+" · TỪ VỰNG";$("hanzi").textContent=w.h;$("pinyin").textContent=w.p;$("meaning").textContent=w.m;
  $("exampleCn").textContent=w.ec||"";$("examplePy").textContent=w.ep\vert{}\vert{}"";$("exampleVi").textContent=w.ev||"";
  $("counter").textContent=`Từ ${current+1} / ${view.length}`;
- $("percent").textContent=`${Math.round(known.size/Math.max(words.length,1)*100)}% đã thuộc`;
+ $("percent").textContent=`${Math.round(known.size/words.length*100)}% đã thuộc`;
  $("fill").style.width=((current+1)/view.length*100)+"%";
  $("totalStat").textContent=view.length;$("knownStat").textContent=known.size;$("unknownStat").textContent=marks.size;
- $("unknownBtn").classList.toggle("marked",marks.has(k));
- $("unknownBtn").textContent=marks.has(k)?"⭐ Đã đánh dấu chưa thuộc":"⭐ Chưa thuộc";
- persist();
 }
 
 $("prevBtn").onclick=()=>{current--;render()};
 $("nextBtn").onclick=()=>{current++;render()};
-$("unknownBtn").onclick=()=>{let k=view[current].id||view[current].h;if(marks.has(k))marks.delete(k);else marks.add(k);persist();render()};
+$("unknownBtn").onclick=()=>{let k=view[current].h;if(marks.has(k))marks.delete(k);else marks.add(k);render()};
 $("category").onchange=()=>{current=0;render()};
 $("search").oninput=()=>{current=0;render()};
 $("order").onchange=()=>{current=0;render()};
@@ -208,35 +215,11 @@ $("speakBtn").onclick=()=>{
  speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(w.h);u.lang="zh-CN";speechSynthesis.speak(u);
 };
 
-$("addBtn").onclick=()=>{
- let h=$("newHanzi").value.trim(),p=$("newPinyin").value.trim(),m=$("newMeaning").value.trim();
- if(!h||!p||!m){alert("Vui lòng nhập Hán tự, Pinyin và Nghĩa!");return}
- words.push({id:"c_"+Date.now()+"_"+Math.random().toString(36).substr(2,4),h,p,m,c:$("newCategory").value,ec:$("newExample").value.trim(),ep:$("newExamplePy").value.trim(),ev:$("newExampleVi").value.trim()});
- ["newHanzi","newPinyin","newMeaning","newExample","newExamplePy","newExampleVi"].forEach(x=>$(x).value="");
- persist();current=words.length-1;$("category").value="all";render();alert("Đã thêm từ mới!");
-};
-
-$("exportBtn").onclick=()=>{
- let blob=new Blob([JSON.stringify({words,marks:[...marks],known:[...known]},null,2)],{type:"application/json"});
- let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="hsk_vocab.json";a.click();
-};
-
-$("importFile").onchange=async e=>{
- let f=e.target.files[0];if(!f)return;
- try{
-   let d=JSON.parse(await f.text());
-   if(!Array.isArray(d.words))throw Error();
-   words=d.words.map((item,idx)=>({...item, id: item.id || ("imp_"+Date.now()+"_"+idx)}));
-   marks=new Set(d.marks||[]);known=new Set(d.known||[]);
-   persist();current=0;render();alert("Đã nạp file JSON ngon lành rực rỡ 🎉!");
- }catch(err){
-   alert("File JSON bị lỗi định dạng!");
- }
- e.target.value="";
-};
-
-const sentenceBank = [{vi:"Tôi thích ăn món Trung Quốc.",py:"Wǒ ài chī Zhōngguó cài.",cn:"我爱吃中国菜。",parts:["我","爱","吃","中国菜。"]}];
-let gameIndex=0, selectedParts=[];
+const sentenceBank = [
+{vi:"Tôi thích ăn món Trung Quốc.",py:"Wǒ ài chī Zhōngguó cài.",cn:"我爱吃中国菜。",parts:["我","爱","吃","中国菜。"]},
+{vi:"Chúng ta cần nâng cao hiệu suất làm việc.",py:"Wǒmen yào tígāo gōngzuò xiàolǜ.",cn:"我们要提高工作效率。",parts:["我们","要","提高","工作","效率。"]}
+];
+let gameIndex=0, selectedParts=[], gameCorrect=0;
 function drawGame(){
  const s=sentenceBank[gameIndex]; selectedParts=[];
  $("gameCounter").textContent=`Câu ${gameIndex+1} / ${sentenceBank.length}`;
@@ -262,8 +245,11 @@ $("sentenceMode").onclick=()=>{$("flashSection").classList.add("off");$("sentenc
 $("clearWords").onclick=()=>{selectedParts.forEach(x=>x.button.classList.remove("used"));selectedParts=[];drawAnswer();};
 $("checkSentence").onclick=()=>{
  const s=sentenceBank[gameIndex], answer=selectedParts.map(x=>x.part).join("");
- if(answer===s.parts.join("")){$("gameFeedback").textContent="Đúng rồi! 🎉";$("gameFeedback").className="feedback good"}
- else{$("gameFeedback").textContent="Thử lại xem!";$("gameFeedback").className="feedback bad"}
+ if(answer===s.parts.join("")){
+   $("gameFeedback").textContent="Đúng rồi! 🎉";$("gameFeedback").className="feedback good";
+ }else{
+   $("gameFeedback").textContent="Chưa đúng rồi, thử lại xem!";$("gameFeedback").className="feedback bad";
+ }
  $("correctAnswer").textContent="Đáp án: "+s.cn;$("correctAnswer").classList.remove("off");
 };
 $("nextSentence").onclick=()=>{gameIndex=(gameIndex+1)%sentenceBank.length;drawGame()};
